@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    static File saveFile = new File("basket.txt");
+    static File saveFile = new File("basket.bin");
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner scanner = new Scanner(System.in);
@@ -17,7 +17,7 @@ public class Main {
 
         Basket basket = null;
         if (saveFile.exists()) {
-            basket = Basket.loadFromTxtFile(saveFile);
+            basket = Basket.loadFromBinFile(saveFile);
         } else {
             basket = new Basket(products, prices);
         }
@@ -40,7 +40,7 @@ public class Main {
                 productCount = Integer.parseInt(parts[1]); //количество продукта
                 prod[productNumber] += productCount;
                 basket.addToCart(productNumber, productCount);
-                basket.saveTxt(saveFile);
+                basket.saveBin(saveFile);
             }
         }
     }
