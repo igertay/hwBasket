@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class Basket {
     private String[] foods;
@@ -18,6 +19,42 @@ public class Basket {
         this.size = new int[foods.length];
     }
 
+    public static Basket loadFromTxtFile(File textFile) {
+        Basket basket = new Basket();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
+            String foodStr = bufferedReader.readLine();
+            String priceStr = bufferedReader.readLine();
+            String sizeStr = bufferedReader.readLine();
+
+            basket.foods = foodStr.split(" ");
+            basket.prices = Arrays.stream(priceStr.split(" "))
+                    .map(Integer::parseInt)
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+            basket.size = Arrays.stream(sizeStr.split(" "))
+                    .map(Integer::parseInt)
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return basket;
+    }
+
+    public void saveTxt(File textFile) throws FileNotFoundException {
+        try (PrintWriter out = new PrintWriter(textFile)) {
+            out.println(String.join(" ", foods));
+            out.println(String.join(" ", Arrays.stream(prices)
+                    .mapToObj(String::valueOf)
+                    .toArray(String[]::new)));
+            out.println(String.join(" ", Arrays.stream(size)
+                    .mapToObj(String::valueOf)
+                    .toArray(String[]::new)));
+
+        }
+    }
 
     public void addToCart(int productNum, int amount) {
         size[productNum] += amount;
@@ -61,5 +98,7 @@ public class Basket {
         }
         return basket;
     }
+
 }
+
 
